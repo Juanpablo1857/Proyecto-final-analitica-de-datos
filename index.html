@@ -1,0 +1,87 @@
+<!doctype Github Pages testhtml>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clasificación Binaria - Cáncer de Mama</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background:#f5f7fb; color:#172033; }
+    header { background:#172033; color:white; padding:28px; text-align:center; }
+    main { max-width:1100px; margin:auto; padding:24px; }
+    .card { background:white; border-radius:16px; padding:22px; box-shadow:0 8px 24px #0001; margin-bottom:20px; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; }
+    label { font-size:13px; font-weight:bold; }
+    input { width:100%; box-sizing:border-box; padding:10px; margin-top:4px; border:1px solid #ccd3df; border-radius:10px; }
+    button { background:#3159d4; color:white; border:0; padding:14px 22px; border-radius:12px; font-size:16px; cursor:pointer; }
+    #resultado { font-size:22px; font-weight:bold; margin-top:18px; }
+    .nota { color:#5c6575; font-size:14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Clasificación binaria: tumor benigno o maligno</h1>
+    <p>Proyecto final con dataset UCI Breast Cancer Wisconsin Diagnostic</p>
+  </header>
+  <main>
+    <section class="card">
+      <h2>Descripción</h2>
+      <p>Esta página usa un modelo de regresión logística entrenado con características de núcleos celulares para estimar si el tumor es <b>benigno</b> o <b>maligno</b>.</p>
+      <p class="nota">Modelo web estático.</p>
+    </section>
+    <section class="card">
+      <h2>Ingrese los datos</h2>
+      <div class="grid">
+        <label>mean radius<input type="number" step="any" id="mean radius" value="13.37"></label>
+<label>mean texture<input type="number" step="any" id="mean texture" value="18.84"></label>
+<label>mean perimeter<input type="number" step="any" id="mean perimeter" value="86.24"></label>
+<label>mean area<input type="number" step="any" id="mean area" value="551.1"></label>
+<label>mean smoothness<input type="number" step="any" id="mean smoothness" value="0.09587"></label>
+<label>mean compactness<input type="number" step="any" id="mean compactness" value="0.09263"></label>
+<label>mean concavity<input type="number" step="any" id="mean concavity" value="0.06154"></label>
+<label>mean concave points<input type="number" step="any" id="mean concave points" value="0.0335"></label>
+<label>mean symmetry<input type="number" step="any" id="mean symmetry" value="0.1792"></label>
+<label>mean fractal dimension<input type="number" step="any" id="mean fractal dimension" value="0.06154"></label>
+<label>radius error<input type="number" step="any" id="radius error" value="0.3242"></label>
+<label>texture error<input type="number" step="any" id="texture error" value="1.108"></label>
+<label>perimeter error<input type="number" step="any" id="perimeter error" value="2.287"></label>
+<label>area error<input type="number" step="any" id="area error" value="24.53"></label>
+<label>smoothness error<input type="number" step="any" id="smoothness error" value="0.00638"></label>
+<label>compactness error<input type="number" step="any" id="compactness error" value="0.02045"></label>
+<label>concavity error<input type="number" step="any" id="concavity error" value="0.02589"></label>
+<label>concave points error<input type="number" step="any" id="concave points error" value="0.01093"></label>
+<label>symmetry error<input type="number" step="any" id="symmetry error" value="0.01873"></label>
+<label>fractal dimension error<input type="number" step="any" id="fractal dimension error" value="0.003187"></label>
+<label>worst radius<input type="number" step="any" id="worst radius" value="14.97"></label>
+<label>worst texture<input type="number" step="any" id="worst texture" value="25.41"></label>
+<label>worst perimeter<input type="number" step="any" id="worst perimeter" value="97.66"></label>
+<label>worst area<input type="number" step="any" id="worst area" value="686.5"></label>
+<label>worst smoothness<input type="number" step="any" id="worst smoothness" value="0.1313"></label>
+<label>worst compactness<input type="number" step="any" id="worst compactness" value="0.2119"></label>
+<label>worst concavity<input type="number" step="any" id="worst concavity" value="0.2267"></label>
+<label>worst concave points<input type="number" step="any" id="worst concave points" value="0.09993"></label>
+<label>worst symmetry<input type="number" step="any" id="worst symmetry" value="0.2822"></label>
+<label>worst fractal dimension<input type="number" step="any" id="worst fractal dimension" value="0.08004"></label>
+      </div>
+      <br>
+      <button onclick="predecir()">Predecir</button>
+      <div id="resultado"></div>
+    </section>
+  </main>
+<script>
+const PARAMS = {"features": ["mean radius", "mean texture", "mean perimeter", "mean area", "mean smoothness", "mean compactness", "mean concavity", "mean concave points", "mean symmetry", "mean fractal dimension", "radius error", "texture error", "perimeter error", "area error", "smoothness error", "compactness error", "concavity error", "concave points error", "symmetry error", "fractal dimension error", "worst radius", "worst texture", "worst perimeter", "worst area", "worst smoothness", "worst compactness", "worst concavity", "worst concave points", "worst symmetry", "worst fractal dimension"], "mean": [14.166076923076924, 19.417692307692306, 92.21586813186812, 659.5782417582418, 0.09599294505494504, 0.10383485714285715, 0.08918428285714286, 0.0490145978021978, 0.18149714285714286, 0.06271481318681318, 0.4111872527472527, 1.217881978021978, 2.9115687912087918, 41.27910329670329, 0.006895252747252748, 0.025323432967032967, 0.03201755076923077, 0.011690617582417583, 0.0204266989010989, 0.003766038021978022, 16.351514285714288, 25.90487912087912, 107.86048351648353, 890.5692307692308, 0.13208303296703297, 0.25552947252747255, 0.27516636703296704, 0.11549070549450549, 0.2913637362637363, 0.0841236923076923], "scale": [3.575145842966192, 4.285935362007162, 24.6899414867669, 360.0224032546589, 0.014293957445666316, 0.05385095918959042, 0.08160817457896849, 0.03964233748792279, 0.02761585252202172, 0.006962934577614083, 0.2898637344353451, 0.5517048705229317, 2.120784564278267, 48.33097570059751, 0.002851470755239646, 0.017604664703992863, 0.03169439851379008, 0.0062823507239402, 0.008301452158911843, 0.0026291028502456334, 4.895648476314663, 6.072847254508961, 34.13844252141843, 581.7058880535004, 0.023455373508121897, 0.15822586358561638, 0.21183314368274303, 0.06677035672401135, 0.06297407475727483, 0.018148675899809178], "coef": [0.361150068449133, 0.48221940329617946, 0.35315986626691276, 0.43995028198850394, 0.3506215582917169, -0.43954614808744313, 0.7822983533225192, 0.9528128318119825, -0.1639908683770673, -0.08086512047777432, 1.2333251663808187, -0.4076112582620644, 0.7482947115713595, 0.9090290582882165, 0.24799098171630335, -0.9069248024192622, -0.09234069448239463, 0.48208907859235267, -0.33065773405654075, -0.5938763200364325, 0.8969678339058802, 1.4340931710338392, 0.7231114802873424, 0.9004766112545068, 0.4202067546570042, -0.17348750804499355, 0.9114058021854969, 0.703998806703189, 1.0612636621709468, 0.05486987894732406], "intercept": -0.24300532690560228, "defaults": {"mean radius": 13.37, "mean texture": 18.84, "mean perimeter": 86.24, "mean area": 551.1, "mean smoothness": 0.09587, "mean compactness": 0.09263, "mean concavity": 0.06154, "mean concave points": 0.0335, "mean symmetry": 0.1792, "mean fractal dimension": 0.06154, "radius error": 0.3242, "texture error": 1.108, "perimeter error": 2.287, "area error": 24.53, "smoothness error": 0.00638, "compactness error": 0.02045, "concavity error": 0.02589, "concave points error": 0.01093, "symmetry error": 0.01873, "fractal dimension error": 0.003187, "worst radius": 14.97, "worst texture": 25.41, "worst perimeter": 97.66, "worst area": 686.5, "worst smoothness": 0.1313, "worst compactness": 0.2119, "worst concavity": 0.2267, "worst concave points": 0.09993, "worst symmetry": 0.2822, "worst fractal dimension": 0.08004}, "accuracy": 0.9649};
+function sigmoid(z) { return 1 / (1 + Math.exp(-z)); }
+function predecir() {
+  let z = PARAMS.intercept;
+  for (let i = 0; i < PARAMS.features.length; i++) {
+    const f = PARAMS.features[i];
+    const x = parseFloat(document.getElementById(f).value);
+    const xs = (x - PARAMS.mean[i]) / PARAMS.scale[i];
+    z += PARAMS.coef[i] * xs;
+  }
+  const p = sigmoid(z);
+  const clase = p >= 0.5 ? 'MALIGNO' : 'BENIGNO';
+  document.getElementById('resultado').innerHTML = `Resultado: ${clase}<br>Probabilidad de maligno: ${(p*100).toFixed(2)}%`;
+}
+</script>
+</body>
+</html>
